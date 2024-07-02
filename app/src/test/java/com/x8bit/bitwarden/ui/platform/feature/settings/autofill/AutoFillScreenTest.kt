@@ -20,7 +20,9 @@ import com.x8bit.bitwarden.ui.platform.base.BaseComposeTest
 import com.x8bit.bitwarden.ui.platform.manager.intent.IntentManager
 import com.x8bit.bitwarden.ui.util.assertNoDialogExists
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -42,6 +44,7 @@ class AutoFillScreenTest : BaseComposeTest() {
     }
     private val intentManager: IntentManager = mockk {
         every { startSystemAutofillSettingsActivity() } answers { isSystemSettingsRequestSuccess }
+        every { startCredentialManagerSettings(any()) } just runs
     }
 
     @Before
@@ -92,6 +95,15 @@ class AutoFillScreenTest : BaseComposeTest() {
             .onAllNodesWithText("Ok")
             .filterToOne(hasAnyAncestor(isDialog()))
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `on NavigateToSettings should attempt to navigate to credential manager settings`() {
+        mutableEventFlow.tryEmit(AutoFillEvent.NavigateToSettings)
+
+        verify { intentManager.startCredentialManagerSettings(any()) }
+
+        composeTestRule.assertNoDialogExists()
     }
 
     @Test

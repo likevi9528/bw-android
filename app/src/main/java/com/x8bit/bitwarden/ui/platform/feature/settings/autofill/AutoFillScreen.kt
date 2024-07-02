@@ -1,6 +1,5 @@
 package com.x8bit.bitwarden.ui.platform.feature.settings.autofill
 
-import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.credentials.CredentialManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.x8bit.bitwarden.R
@@ -84,9 +82,7 @@ fun AutoFillScreen(
             }
 
             AutoFillEvent.NavigateToSettings -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    CredentialManager.create(context).createSettingsPendingIntent().send()
-                }
+                intentManager.startCredentialManagerSettings(context)
             }
         }
     }
