@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,12 +34,10 @@ fun SearchEmptyContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
-            painter = rememberVectorPainter(id = R.drawable.ic_search),
+            painter = rememberVectorPainter(id = R.drawable.ic_search_empty),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier
-                .size(74.dp)
-                .padding(horizontal = 16.dp),
+            tint = Color.Unspecified,
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
 
         Spacer(modifier = Modifier.height(24.dp))

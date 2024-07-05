@@ -10,16 +10,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.x8bit.bitwarden.R
 import com.x8bit.bitwarden.ui.platform.components.text.BitwardenPolicyWarningText
+import com.x8bit.bitwarden.ui.platform.components.util.rememberVectorPainter
 
 /**
  * No items view for the [VaultScreen].
@@ -30,6 +33,7 @@ fun VaultNoItems(
     policyDisablesSend: Boolean,
     modifier: Modifier = Modifier,
     message: String = stringResource(id = R.string.no_items),
+    buttonText: String = stringResource(id = R.string.add_an_item),
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -45,6 +49,15 @@ fun VaultNoItems(
         }
 
         Spacer(modifier = Modifier.weight(1F))
+
+        Icon(
+            painter = rememberVectorPainter(id = R.drawable.ic_search_empty),
+            contentDescription = null,
+            tint = Color.Unspecified,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             textAlign = TextAlign.Center,
@@ -68,7 +81,7 @@ fun VaultNoItems(
             ),
         ) {
             Text(
-                text = stringResource(id = R.string.add_an_item),
+                text = buttonText,
                 style = MaterialTheme.typography.labelLarge,
             )
         }
