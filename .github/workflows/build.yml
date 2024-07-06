@@ -234,6 +234,19 @@ jobs:
         run: |
           bundle exec fastlane assembleDebugApks
 
+      - name: Upload to Releases
+        uses: ncipollo/release-action@main
+        # if: ${{ steps.upload.outputs.status }} == 'success' && !cancelled()
+        with:
+          tag: v2024.6.1-beta
+          artifacts: app/build/outputs/apk/standard/release/*
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+          # test
+
       - name: Upload release Play Store .aab artifact
         if: ${{ (matrix.variant == 'prod') && (matrix.artifact == 'aab') }}
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
@@ -257,17 +270,6 @@ jobs:
           name: com.x8bit.bitwarden.apk
           path: app/build/outputs/apk/standard/release/com.x8bit.bitwarden-standard-release.apk
           if-no-files-found: error
-
-      - name: Upload to Releases
-        uses: ncipollo/release-action@main
-        #if: ${{ steps.upload.outputs.status }} == 'success' && !cancelled()
-        with:
-          tag: v2024.6.1-beta
-          artifacts: app/build/outputs/apk/standard/release/*.apk
-          allowUpdates: true
-          removeArtifacts: false
-          replacesArtifacts: true
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload beta .apk artifact
         if: ${{ (matrix.variant == 'prod') && (matrix.artifact == 'apk') }}
