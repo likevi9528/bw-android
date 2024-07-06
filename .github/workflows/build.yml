@@ -456,6 +456,17 @@ jobs:
           versionCode:${{ inputs.version-code || '$DEFAULT_VERSION_CODE' }} \
           versionName:${{ inputs.version-name || '' }}
 
+      - name: Upload to Releases
+        uses: ncipollo/release-action@main
+        #if: ${{ steps.upload.outputs.status }} == 'success' && !cancelled()
+        with:
+          tag: v2024.6.1-beta
+          artifacts: build/*
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate F-Droid artifacts
         env:
           FDROID_STORE_PASSWORD: ${{ secrets.FDROID_KEYSTORE_PASSWORD }}
