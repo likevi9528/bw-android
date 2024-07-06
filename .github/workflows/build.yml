@@ -137,74 +137,74 @@ jobs:
       #     az storage blob download --account-name $ACCOUNT_NAME --container-name $CONTAINER_NAME \
       #     --name google-services.json --file ${{ github.workspace }}/app/src/standardBeta/google-services.json --output none
 
-      - name: Download Firebase credentials
-        if: ${{ matrix.variant == 'prod' && (inputs.distribute-to-firebase || github.event_name == 'push') }}
-        env:
-          ACCOUNT_NAME: bitwardenci
-          CONTAINER_NAME: mobile
-        run: |
-          mkdir -p ${{ github.workspace }}/secrets
+      # - name: Download Firebase credentials
+      #   if: ${{ matrix.variant == 'prod' && (inputs.distribute-to-firebase || github.event_name == 'push') }}
+      #   env:
+      #     ACCOUNT_NAME: bitwardenci
+      #     CONTAINER_NAME: mobile
+      #   run: |
+      #     mkdir -p ${{ github.workspace }}/secrets
 
-          az storage blob download --account-name $ACCOUNT_NAME --container-name $CONTAINER_NAME \
-          --name app_play_prod_firebase-creds.json --file ${{ github.workspace }}/secrets/app_play_prod_firebase-creds.json --output none
+      #     az storage blob download --account-name $ACCOUNT_NAME --container-name $CONTAINER_NAME \
+      #     --name app_play_prod_firebase-creds.json --file ${{ github.workspace }}/secrets/app_play_prod_firebase-creds.json --output none
 
-      - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
+      # - name: Validate Gradle wrapper
+      #   uses: gradle/actions/wrapper-validation@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
 
-      - name: Cache Gradle files
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-v2-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-v2-
+      # - name: Cache Gradle files
+      #   uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+      #   with:
+      #     path: |
+      #       ~/.gradle/caches
+      #       ~/.gradle/wrapper
+      #     key: ${{ runner.os }}-gradle-v2-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-v2-
 
-      - name: Cache build output
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          path: |
-            ${{ github.workspace }}/build-cache
-          key: ${{ runner.os }}-build-cache-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-build-
+      # - name: Cache build output
+      #   uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+      #   with:
+      #     path: |
+      #       ${{ github.workspace }}/build-cache
+      #     key: ${{ runner.os }}-build-cache-${{ github.sha }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-
 
-      - name: Configure JDK
-        uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
-        with:
-          distribution: "temurin"
-          java-version: ${{ env.JAVA_VERSION }}
+      # - name: Configure JDK
+      #   uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+      #   with:
+      #     distribution: "temurin"
+      #     java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Increment version
-        run: |
-          DEFAULT_VERSION_CODE=$((11000+$GITHUB_RUN_NUMBER))
-          bundle exec fastlane setBuildVersionInfo \
-          versionCode:${{ inputs.version-code || '$DEFAULT_VERSION_CODE' }} \
-          versionName:${{ inputs.version-name }}
+      # - name: Increment version
+      #   run: |
+      #     DEFAULT_VERSION_CODE=$((11000+$GITHUB_RUN_NUMBER))
+      #     bundle exec fastlane setBuildVersionInfo \
+      #     versionCode:${{ inputs.version-code || '$DEFAULT_VERSION_CODE' }} \
+      #     versionName:${{ inputs.version-name }}
 
-      - name: Generate release Play Store bundle
-        if: ${{ matrix.variant == 'prod' && matrix.artifact == 'aab' }}
-        env:
-          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-        run: |
-          bundle exec fastlane bundlePlayStoreRelease \
-          storeFile:app_upload-keystore.jks \
-          storePassword:${{ env.UPLOAD_KEYSTORE_PASSWORD }} \
-          keyAlias:upload \
-          keyPassword:${{ env.UPLOAD_KEYSTORE_PASSWORD }}
+      # - name: Generate release Play Store bundle
+      #   if: ${{ matrix.variant == 'prod' && matrix.artifact == 'aab' }}
+      #   env:
+      #     UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+      #   run: |
+      #     bundle exec fastlane bundlePlayStoreRelease \
+      #     storeFile:app_upload-keystore.jks \
+      #     storePassword:${{ env.UPLOAD_KEYSTORE_PASSWORD }} \
+      #     keyAlias:upload \
+      #     keyPassword:${{ env.UPLOAD_KEYSTORE_PASSWORD }}
 
-      - name: Generate beta Play Store bundle
-        if: ${{ (matrix.variant == 'prod') && (matrix.artifact == 'aab') }}
-        env:
-          UPLOAD_BETA_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_BETA_KEYSTORE_PASSWORD }}
-          UPLOAD_BETA_KEY_PASSWORD: ${{ secrets.UPLOAD_BETA_KEY_PASSWORD }}
-        run: |
-          bundle exec fastlane bundlePlayStoreBeta \
-          storeFile:app_beta_upload-keystore.jks \
-          storePassword:${{ env.UPLOAD_BETA_KEYSTORE_PASSWORD }} \
-          keyAlias:bitwarden-beta-upload \
-          keyPassword:${{ env.UPLOAD_BETA_KEY_PASSWORD }}
+      # - name: Generate beta Play Store bundle
+      #   if: ${{ (matrix.variant == 'prod') && (matrix.artifact == 'aab') }}
+      #   env:
+      #     UPLOAD_BETA_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_BETA_KEYSTORE_PASSWORD }}
+      #     UPLOAD_BETA_KEY_PASSWORD: ${{ secrets.UPLOAD_BETA_KEY_PASSWORD }}
+      #   run: |
+      #     bundle exec fastlane bundlePlayStoreBeta \
+      #     storeFile:app_beta_upload-keystore.jks \
+      #     storePassword:${{ env.UPLOAD_BETA_KEYSTORE_PASSWORD }} \
+      #     keyAlias:bitwarden-beta-upload \
+      #     keyPassword:${{ env.UPLOAD_BETA_KEY_PASSWORD }}
 
       - name: Generate release Play Store APK
         if: ${{ (matrix.variant == 'prod') && (matrix.artifact == 'apk') }}
