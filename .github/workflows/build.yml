@@ -83,6 +83,19 @@ jobs:
       - name: Build
         run: bundle exec fastlane assembleDebugApks
 
+      - name: Upload to Releases
+        uses: ncipollo/release-action@main
+        # if: ${{ steps.upload.outputs.status }} == 'success' && !cancelled()
+        with:
+          tag: v2024.6.1-beta
+          artifacts: app/build/outputs/apk/standard/release/*
+          allowUpdates: true
+          removeArtifacts: false
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+          # first test
+
   publish_playstore:
     name: Publish Play Store artifacts
     needs:
@@ -108,10 +121,10 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
 
-      - name: Log in to Azure
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
+      # - name: Log in to Azure
+      #   uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
+      #   with:
+      #     creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
 
       - name: Retrieve secrets
         env:
