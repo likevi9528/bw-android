@@ -32,15 +32,16 @@ jobs:
       - name: Set repository name as env variable
         run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
 
-      - name: build
-      - uses: sparkfabrik/android-build-action@v1.3.0
+              
+      - name: Build Android App    
+        uses: sparkfabrik/android-build-action@v1.5.0
         with:
-          project-path: android
+          project-path: /
           output-path: beta.apk
-          browserstack-upload: true
-          browserstack-username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          browserstack-access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          ruby-version: "1.180.1"
+          # browserstack-upload: true
+          # browserstack-username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          # browserstack-access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          ruby-version: "3.3.1"
           bundler-version: "2.2.27"
           fastlane-env: "debug"
 
